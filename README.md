@@ -4,9 +4,12 @@
 - Bilgisayar ve kullanıcı sırayla tahminde bulunurlar. Oyuna bilgisayar başlar, ardından kullanıcı, bilgisayar, kullanıcı... sırasıyla devam eder. 
 - Bilgisayarın tahmini kullanıcı tarafından değerlendirilir ve geri bildirimde bulunur. Benzer şekilde kullanıcının tahmini de bilgisayar tarafından değerlendirilir ve geri    bildirimde bulunur. 
 - Tahmin edilen sayı ile gerçek sayının iki rakamı eşleşiyor ve aynı basamakta bulunuyorsa +1, tahmin edilen sayı ile gerçek sayının iki rakamı eşleşiyor ama farklı basamakta bulunuyorsa -1 değeri döndürülür. 
-- Tahmin edilen sayı:  1789   |   3472
-  Gerçek sayı:         5681   |   3875 
-  Döndürülen değerler: +1,-1  |   +2 
+- Tahmin edilen sayı:  1789
+- Gerçek sayı:         5681
+- Döndürülen değerler: +1,-1
+- Tahmin edilen sayı:  3472
+- Gerçek sayı:         3875 
+- Döndürülen değerler: +2 
 - Tahmin edilen sayılar ve geri dönüş değerleri listboxlara eklenir.
 - Oyun bilgisayar yada kullanıcı sayıyı doğru tahmin edene kadar devam eder.
 - Oyunun nasıl oynandığını merak eden kullanıcılar sağ üst tarafta yer alan soru işaretine tıklayarak Rehber Ekranına erişebilirler.
