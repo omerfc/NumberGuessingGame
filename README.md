@@ -21,4 +21,4 @@
 ![aaaaa](https://user-images.githubusercontent.com/47925783/111311791-adc82900-866f-11eb-8f5b-045d9ccee560.png)
 
 # Kurulum
-Uygulama C# dilinde Visual Studio 2019 Windows Form uygulaması olarak geliştirilmiştir. Uygulamayı çalıştırılabilmek için proje dosyasını indirip Visual Studio'da açmak yeterlidir.
+Uygulama C# dilinde Visual Studio 2019 Windows Form uygulaması olarak geliştirilmiştir. Uygulamayı çalıştırılabilmek için proje dosyasını indirip Visual Studio'da açılabilir. Ayrıca proje dosyası indirilip NumberGuessingGame/bin/Debug/netcoreapp3.1/NumberGuessingGame.exe çalıştırılabilir.
