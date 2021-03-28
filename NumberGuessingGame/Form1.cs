@@ -252,7 +252,7 @@ namespace NumberGuessingGame
                 {
                     cs++;
                 }
-                else if((AllNumber[i]/100) % 10 == number/1000 || (AllNumber[i]/10) % 10== number/1000 || (AllNumber[i] % 10 == number / 1000))
+                else if((AllNumber[i]/100) % 10 == number/1000 || (AllNumber[i]/10) % 10 == number/1000 || (AllNumber[i] % 10 == number / 1000))
                 {
                     cd++;
                 }
@@ -283,12 +283,14 @@ namespace NumberGuessingGame
                 {
                     cd++;
                 }
+                //geri bildirimlere uymayanlar yeni bir listeye atılır. 
                 if((cs!=same) || (cd != dif))
                 {
                     a.Add(AllNumber[i]);
                 }
             }
-            for(int i = 0; i < a.Count; i++)
+            //Yeni listede olan elemanlar AllNumber'dan silinir. 
+            for (int i = 0; i < a.Count; i++)
             {
                 AllNumber.Remove(a[i]);
             }
