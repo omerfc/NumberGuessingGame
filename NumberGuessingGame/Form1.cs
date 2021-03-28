@@ -12,13 +12,15 @@ namespace NumberGuessingGame
 {
     public partial class NumberGuessingGame : Form
     {
-        int[,] allPredictionNumber = new int[100,4];
-        int[] predictionNumberComputer = new int[4]; //bilgisayarın tahmin ettiği sayı
+        int predictionNumberComputer; //bilgisayarın tahmin ettiği sayı
         int[] computerArray = new int[4];//bilgisayarın tuttuğu sayı
         int counterSameDigit;
         int counterDifferentDigit;
         int counterComputerPrediction = 0;
         int counterUserPrediction = 0;
+        List<int> AllNumber = new List<int>();
+        List<int> digit0 = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        List<int> digitfirst = new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         public NumberGuessingGame()
         {
             InitializeComponent();
@@ -32,25 +34,26 @@ namespace NumberGuessingGame
         private int[] CreateNumber()
         {
             // Bu method rakamları birbirinden farklı sayılar oluşturmak için çağrılır.
-            int[] numberArray = new int[4];
+            int[] numberArray = new int[4] {10,10,10,10};
             Random rnd = new Random();
-            int number;
-            while (numberArray[0] == 0)
+            int number, bit0;
+            bit0 = rnd.Next(digit0.Count);
+            numberArray[0] = digit0[bit0];
+            digitfirst.Remove(digit0[bit0]);
+            for (int i = 1; i < 4; i++)
             {
-                for (int i = 0; i < 4; i++)
+                number = rnd.Next(digitfirst.Count);
+                for (int j = 0; j < 4; j++)
                 {
-                    number = rnd.Next(10);
-                    for (int j = 0; j < 4; j++)
+                    if (numberArray[j] == digitfirst[number])
                     {
-                        if (numberArray[j] == number)
-                        {
-                            number = rnd.Next(10);
-                            j = 0;
-                        }
+                        number = rnd.Next(digitfirst.Count);
+                        j = 0;
                     }
-                    numberArray[i] = number;
                 }
-            }
+                numberArray[i] = digitfirst[number];
+                digitfirst.Remove(number);
+            }      
             return numberArray;
         }
         private void CompareArrays(int[] predictionNumber, int[] computerArray)
@@ -112,19 +115,19 @@ namespace NumberGuessingGame
             }
             else
             {
-                int[] predictionNumber = new int[4];
+                int[] predictionNumberUser = new int[4];
                 for (int i = 0; i < 4; i++)
                 {
-                    predictionNumber[i] = textBoxPrediction.Text[i] - '0';
+                    predictionNumberUser[i] = textBoxPrediction.Text[i] - '0';
                 }
-                if (!ControlNumber(predictionNumber))
+                if (!ControlNumber(predictionNumberUser))
                 {
                     MessageBox.Show("Lütfen rakamları birbirinden farklı 4 basamaklı bir sayı giriniz!");
                 }
                 else
                 {
                     counterUserPrediction++;
-                    CompareArrays(predictionNumber, computerArray);
+                    CompareArrays(predictionNumberUser, computerArray);
                     groupBoxComputer.Enabled = true;
                     groupBoxUser.Enabled = false;
                     label5.Visible = false;
@@ -195,19 +198,19 @@ namespace NumberGuessingGame
             {
                 if (counterComputerPrediction == 0)
                 {
-                    predictionNumberComputer = CreateNumber();
-                    label3.Text = PrintNumber(predictionNumberComputer);
+                    CreateAllNumber();
+                    Random rnd = new Random();
+                    predictionNumberComputer = AllNumber[rnd.Next(AllNumber.Count)];
+                    AllNumber.Remove(predictionNumberComputer);
+                    label3.Text = predictionNumberComputer.ToString();
                     listBoxComputerPrediction.Items.Add(new { Sıra= counterComputerPrediction, Sayı = label3.Text});
-                    for (int i = 0; i < 4; i++)
-                    {
-                        allPredictionNumber[0, i] = predictionNumberComputer[i];
-                    }
                     comboBoxSameOrder.Enabled = true;
                     comboBoxDifOrder.Enabled = true;
                 }
                 else
                 {
-                    label3.Text = PrintNumber(ChangeNumber(predictionNumberComputer, Int32.Parse(SameOrder), -Int32.Parse(DifOrder)));
+                    predictionNumberComputer = ChangeNumber(predictionNumberComputer, Int32.Parse(SameOrder), -Int32.Parse(DifOrder));
+                    label3.Text = predictionNumberComputer.ToString();
                     listBoxComputerPrediction.Items.Add(new { Sıra= counterComputerPrediction, Sayı = label3.Text, Same = comboBoxSameOrder.Text, Dif = comboBoxDifOrder.Text });
                 }
                 counterComputerPrediction++;
@@ -219,89 +222,79 @@ namespace NumberGuessingGame
             label5.Text = "Sıra kullanıcıda";
             buttonPredictNumberComputer.Text = "Gönder";
         }
-        private int[] ChangeNumber(int[] array, int same, int dif)
+        private void CreateAllNumber()
         {
-            /*
-             * Bilgisayarın tahmin ettiği sayının yanlış olması durumunda,
-             * kullanıcının da geri bildirimlerini kullanarak yeni 4 basamaklı sayı oluşturmak için çağrılır.
-             */
-            int number, digit;
+            int digit0, digit1, digit2, digit3;
+            for(int i = 1023; i <= 9876; i++)
+            {
+                digit0 = i / 1000;
+                digit1 = (i / 100) % 10;
+                digit2 = (i / 10) % 10;
+                digit3 = i % 10;
+                if(digit0==digit1 || digit0==digit2 || digit0== digit3 || digit1==digit2 || digit1==digit3 || digit2 == digit3)
+                {
+                    continue;
+                }
+                else
+                {
+                    AllNumber.Add(i);
+                }
+            }
+        }
+        private int ChangeNumber(int number, int same, int dif)
+        {
+            List<int> a = new List<int>();
+            for(int i = 0; i < AllNumber.Count; i++)
+            {
+                int cs = 0, cd = 0;
+                //1.basamak
+                if (AllNumber[i] / 1000 == number / 1000)
+                {
+                    cs++;
+                }
+                else if((AllNumber[i]/100) % 10 == number/1000 || (AllNumber[i]/10) % 10== number/1000 || (AllNumber[i] % 10 == number / 1000))
+                {
+                    cd++;
+                }
+                //2.basamak
+                if((AllNumber[i]/100) % 10 == (number / 100) % 10)
+                {
+                    cs++;
+                }
+                else if(AllNumber[i]/1000 == (number / 100) % 10 || (AllNumber[i] / 10) % 10 == (number / 100) % 10 || AllNumber[i] % 10 == (number / 100) % 10)
+                {
+                    cd++;
+                }
+                //3.basamak
+                if ((AllNumber[i] / 10) % 10 == (number / 10) % 10)
+                {
+                    cs++;
+                }
+                else if(AllNumber[i] / 1000 == (number / 10) % 10 || (AllNumber[i] / 100) % 10 == (number / 10) % 10 || (AllNumber[i] % 10) == (number / 10) % 10)
+                {
+                    cd++;
+                }
+                //4.basamak
+                if (AllNumber[i] % 10 == number % 10)
+                {
+                    cs++;
+                }
+                else if (AllNumber[i] / 1000 == number % 10 || (AllNumber[i] / 100) % 10 == number % 10 || (AllNumber[i] / 10) % 10 == number % 10)
+                {
+                    cd++;
+                }
+                if((cs!=same) || (cd != dif))
+                {
+                    a.Add(AllNumber[i]);
+                }
+            }
+            for(int i = 0; i < a.Count; i++)
+            {
+                AllNumber.Remove(a[i]);
+            }
             Random rnd = new Random();
-            do
-            {
-                if (dif > 0)
-                {
-                    for (int i = 0; i < dif; i++)
-                    {
-                        digit = rnd.Next(4);
-                        int digitSecond = rnd.Next(4);
-                        while (digit==digitSecond)
-                        {
-                            digitSecond = rnd.Next(4);
-                        }
-                        if ((array[digit] == 0 && digitSecond == 0) || (array[digitSecond] == 0 && digit == 0))
-                        {
-                            i = 0;
-                        }
-                        else
-                        {
-                            number = array[digit];
-                            array[digit] = array[digitSecond];
-                            array[digitSecond] = number;
-                        }
-                    }
-                }
-                for (int i = 0; i < 4 - (same + dif); i++)
-                {
-                    digit = rnd.Next(4);
-                    if (digit == 0)
-                    {
-                        number = rnd.Next(1, 10);
-                        for (int j = 0; j < 4; j++)
-                        {
-                            if (array[j] == number)
-                            {
-                                number = rnd.Next(1, 10);
-                                j = 0;
-                            }
-                        }
-                        array[digit] = number;
-                    }
-                    else
-                    {
-                        number = rnd.Next(10);
-                        for (int j = 0; j < 4; j++)
-                        {
-                            if (array[j] == number)
-                            {
-                                number = rnd.Next(10);
-                                j = 0;
-                            }
-                        }
-                        array[digit] = number;
-                    }
-                }
-            } while (!ControlNumber(array) || !CompareComputerPrediction(array,allPredictionNumber));
-            for (int i = 0; i < 4; i++) 
-            {
-                allPredictionNumber[counterComputerPrediction, i] = array[i];
-            }
-            return array;
-        }
-        private Boolean CompareComputerPrediction(int[] prediction, int[,] allPredictionNumber)
-        {
-            /*
-             Bilgisayarın tahmin edeceği sayının, önceden tahmin ettiği sayılardan farklı olmasını sağlamak için çağrılır.
-              */
-            for (int i = 0; i < counterComputerPrediction; i++) {
-                if(prediction[0]==allPredictionNumber[i,0] && prediction[1] == allPredictionNumber[i, 1] &&
-                        prediction[2] == allPredictionNumber[i, 2] && prediction[3] == allPredictionNumber[i, 3])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+            return AllNumber[rnd.Next(AllNumber.Count)];            
+        }        
         private void textBoxPrediction_KeyPress(object sender, KeyPressEventArgs e)
         {
             //Textbox'a sadece rakamların girilmesini sağlar
